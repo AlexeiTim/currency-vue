@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { useCurrencyStore } from '@/stores/currency-store'
+import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
 
 const currencyStore = useCurrencyStore()
+const { selectedCurrency } = storeToRefs(currencyStore)
 const firstCurrency = ref(currencyStore.selectedCurrency || 'rub')
 const secondCurrency = ref(currencyStore.selectedCurrency === 'rub' ? 'usd' : 'rub')
 
+function updateCurrencies() {
+  firstCurrency.value = currencyStore.selectedCurrency || 'rub'
+  secondCurrency.value = currencyStore.selectedCurrency === 'rub' ? 'usd' : 'rub'
+}
 const firstCurrencyValue = ref(1)
 const secondCurrentValue = ref(1)
 
@@ -42,6 +48,11 @@ function handleInputSecondCurrency(event: Event) {
 }
 
 watch([firstCurrency, secondCurrency], () => {
+  convertFirstToSecond()
+})
+
+watch(selectedCurrency, () => {
+  updateCurrencies()
   convertFirstToSecond()
 })
 

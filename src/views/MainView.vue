@@ -11,7 +11,7 @@ const { isLoading, error, selectedCurrency, currentCurrency } = storeToRefs(curr
   <div v-else-if="error">{{ error }}</div>
   <div v-if="!isLoading && !error">
     <div v-for="currency in currentCurrency" :key="currency.name">
-      1 {{ currency.name.toUpperCase() }} - {{ currency.value }}
+      1 {{ currency.name.toUpperCase() }} - {{ currency.value.toFixed(2) }}
       {{ selectedCurrency.toUpperCase() }}
     </div>
   </div>
