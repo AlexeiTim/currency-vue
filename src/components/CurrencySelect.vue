@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { useCurrencyStore } from '@/stores/currency-store'
-import { storeToRefs } from 'pinia'
-
-const currencyStore = useCurrencyStore()
-const { selectedCurrency } = storeToRefs(currencyStore)
+const props = defineProps<{
+  currencies: string[]
+}>()
+const modelValue = defineModel({ default: '' })
 </script>
 
 <template>
-  <select v-model="selectedCurrency">
-    <option v-for="currency in currencyStore.currencies" :key="currency" :value="currency">
-      {{ currency.toUpperCase() }}
-    </option>
-  </select>
+  <ElSelect v-model="modelValue">
+    <ElOption
+      v-for="currency in props.currencies"
+      :key="currency"
+      :value="currency"
+      :label="currency.toUpperCase()"
+    >
+    </ElOption>
+  </ElSelect>
 </template>
-
-<style scoped></style>

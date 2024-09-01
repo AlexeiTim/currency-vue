@@ -1,20 +1,13 @@
 import { useCurrencyStore } from '@/stores/currency-store'
-import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
 
 export function useConverter() {
   const currencyStore = useCurrencyStore()
-  const { selectedCurrency } = storeToRefs(currencyStore)
 
   const firstCurrency = ref(currencyStore.selectedCurrency || 'rub')
   const secondCurrency = ref(currencyStore.selectedCurrency === 'rub' ? 'usd' : 'rub')
   const firstCurrencyValue = ref(1)
   const secondCurrentValue = ref(1)
-
-  function updateCurrencies() {
-    firstCurrency.value = currencyStore.selectedCurrency || 'rub'
-    secondCurrency.value = currencyStore.selectedCurrency === 'rub' ? 'usd' : 'rub'
-  }
 
   function formatValue(value: string): string {
     const [integer, decimal = ''] = value.split('.')
@@ -34,24 +27,17 @@ export function useConverter() {
     firstCurrencyValue.value = +(rate * secondCurrentValue.value).toFixed(2)
   }
 
-  function handleInputFirstCurrency(event: Event) {
-    const target = event.target as HTMLInputElement
-    firstCurrencyValue.value = +formatValue(target.value)
+  function handleInputFirstCurrency(value: string) {
+    firstCurrencyValue.value = +formatValue(value)
     convertFirstToSecond()
   }
 
-  function handleInputSecondCurrency(event: Event) {
-    const target = event.target as HTMLInputElement
-    secondCurrentValue.value = +formatValue(target.value)
+  function handleInputSecondCurrency(value: string) {
+    secondCurrentValue.value = +formatValue(value)
     convertSecondToFirst()
   }
 
   watch([firstCurrency, secondCurrency], () => {
-    convertFirstToSecond()
-  })
-
-  watch(selectedCurrency, () => {
-    updateCurrencies()
     convertFirstToSecond()
   })
 
