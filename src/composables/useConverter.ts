@@ -23,6 +23,7 @@ export function useConverter() {
     currencyStore.currencies.filter((c) => c !== firstCurrency.value)
   )
 
+  /** Валидация от ИИ */
   function containsInvalidCharacters(value: string): boolean {
     return /[^0-9.,]/.test(value) || (value.match(/[.,]/g) || []).length > 1
   }

@@ -1,4 +1,6 @@
-/** Форматирование значения, для 2 знаков после запятой */
+/** Форматирование значения
+ * Утилиту попросил у ИИ
+ */
 export function formatCurrencyNumber(value: string): string {
   let normalizedValue = value.replace(',', '.')
   if (value.length === 2 && value[0] === '0' && value[1] !== '.') return value[1]
