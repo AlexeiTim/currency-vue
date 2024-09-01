@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import CurrencySelect from '@/components/CurrencySelect.vue'
 import { useConverter } from '@/composables/useConverter'
-import { useCurrencyStore } from '@/stores/currency-store'
-import { computed } from 'vue'
 
 const {
   firstCurrency,
   secondCurrency,
   firstCurrencyValue,
   secondCurrentValue,
+  firstCurrencies,
+  secondCurrencies,
   handleInputFirstCurrency,
   handleInputSecondCurrency
 } = useConverter()
-
-const firstCurrencies = computed(() =>
-  currencyStore.currencies.filter((c) => c !== secondCurrency.value)
-)
-
-const secondCurrencies = computed(() =>
-  currencyStore.currencies.filter((c) => c !== firstCurrency.value)
-)
-const currencyStore = useCurrencyStore()
 </script>
 
 <template>
