@@ -11,6 +11,7 @@ export const useCurrencyStore = defineStore('currency', () => {
   const currency = ref<Currency | null>(null)
   const selectedCurrency = ref('rub')
 
+  /** Получаю валюты с поддержкой USD, EUR, RUB */
   async function getCurrency() {
     /** Если уже получал данные сразу возвращаю их(можно добавить пуллинг чтобы обновлять с течением времени) */
     if (currency.value) return currency.value
@@ -33,6 +34,7 @@ export const useCurrencyStore = defineStore('currency', () => {
     }
   }
 
+  /** Преобразованный ответ для отображения */
   const currentCurrency = computed(() => {
     if (!currency.value) return []
     const items = Object.entries(currency.value)
@@ -47,6 +49,7 @@ export const useCurrencyStore = defineStore('currency', () => {
     return items
   })
 
+  /** Список состоящий из всех возможный валют(уникальный) */
   const currencies = computed(() => {
     if (!currency.value) return []
     return [...new Set(Object.entries(currency.value).map(([key]) => key.split('-')[0]))]
