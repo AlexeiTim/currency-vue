@@ -9,6 +9,8 @@ const {
   secondCurrentValue,
   firstCurrencies,
   secondCurrencies,
+  firstCurrencyError,
+  secondCurrencyError,
   handleInputFirstCurrency,
   handleInputSecondCurrency
 } = useConverter()
@@ -18,25 +20,22 @@ const {
   <ElCard>
     <h1>Converter</h1>
     <ElForm>
-      <ElFormItem>
+      <ElFormItem :error="firstCurrencyError">
         <div class="form__item">
           <CurrencySelect v-model="firstCurrency" :currencies="firstCurrencies" />
           <ElInput
-            v-model.number="firstCurrencyValue"
-            type="number"
+            step="0.01"
+            v-model="firstCurrencyValue"
+            type="text"
             @input="handleInputFirstCurrency"
           />
         </div>
       </ElFormItem>
 
-      <ElFormItem>
+      <ElFormItem :error="secondCurrencyError">
         <div class="form__item">
           <CurrencySelect v-model="secondCurrency" :currencies="secondCurrencies" />
-          <ElInput
-            v-model.number="secondCurrentValue"
-            type="number"
-            @input="handleInputSecondCurrency"
-          />
+          <ElInput v-model="secondCurrentValue" type="text" @input="handleInputSecondCurrency" />
         </div>
       </ElFormItem>
     </ElForm>

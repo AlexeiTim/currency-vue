@@ -1,4 +1,5 @@
 import { useCurrencyStore } from '@/stores/currency-store'
+import { formatCurrencyNumber } from '@/utils/formatCurrencyNumber'
 import { computed, onMounted, ref, watch } from 'vue'
 
 export function useConverter() {
@@ -6,8 +7,11 @@ export function useConverter() {
 
   const firstCurrency = ref(currencyStore.selectedCurrency || 'rub')
   const secondCurrency = ref(currencyStore.selectedCurrency === 'rub' ? 'usd' : 'rub')
-  const firstCurrencyValue = ref(1)
-  const secondCurrentValue = ref(1)
+  const firstCurrencyError = ref('')
+  const secondCurrencyError = ref('')
+
+  const firstCurrencyValue = ref('1')
+  const secondCurrentValue = ref('1')
 
   /** Валюты не содержат валюту из второго селекта */
   const firstCurrencies = computed(() =>
@@ -19,36 +23,43 @@ export function useConverter() {
     currencyStore.currencies.filter((c) => c !== firstCurrency.value)
   )
 
-  /** Форматирование значения, для 2 знаков после запятой */
-  function formatValue(value: string): string {
-    const [integer, decimal = ''] = value.split('.')
-    const formattedDecimal = decimal.substring(0, 2)
-    return `${integer}.${formattedDecimal.padEnd(2, '0')}`
+  function containsInvalidCharacters(value: string): boolean {
+    return /[^0-9.,]/.test(value) || (value.match(/[.,]/g) || []).length > 1
   }
 
   /** При изменении значения первой валюты конвертировать значение второй валюты */
   function convertFirstToSecond() {
     if (!currencyStore.currency) return
     const rate = currencyStore.currency[`${firstCurrency.value}-${secondCurrency.value}`]
-    secondCurrentValue.value = +(rate * firstCurrencyValue.value).toFixed(2)
+    secondCurrentValue.value = (rate * +firstCurrencyValue.value).toFixed(2)
   }
 
   /** При изменения значения второй валюты конвертировать значение первой валюты */
   function convertSecondToFirst() {
     if (!currencyStore.currency) return
     const rate = currencyStore.currency[`${secondCurrency.value}-${firstCurrency.value}`]
-    firstCurrencyValue.value = +(rate * secondCurrentValue.value).toFixed(2)
+    firstCurrencyValue.value = (rate * +secondCurrentValue.value).toFixed(2)
   }
 
   /** Обработчик для первого поля */
   function handleInputFirstCurrency(value: string) {
-    firstCurrencyValue.value = +formatValue(value)
+    if (containsInvalidCharacters(value)) {
+      firstCurrencyError.value = 'Not valid'
+      return
+    }
+    firstCurrencyError.value = ''
+    firstCurrencyValue.value = formatCurrencyNumber(value)
     convertFirstToSecond()
   }
 
   /** Обработчик для второго поля */
   function handleInputSecondCurrency(value: string) {
-    secondCurrentValue.value = +formatValue(value)
+    if (containsInvalidCharacters(value)) {
+      secondCurrencyError.value = 'Not valid'
+      return
+    }
+    secondCurrencyError.value = ''
+    secondCurrentValue.value = formatCurrencyNumber(value)
     convertSecondToFirst()
   }
 
@@ -69,6 +80,8 @@ export function useConverter() {
     secondCurrentValue,
     firstCurrencies,
     secondCurrencies,
+    secondCurrencyError,
+    firstCurrencyError,
     handleInputSecondCurrency,
     handleInputFirstCurrency
   }
