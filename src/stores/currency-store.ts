@@ -25,7 +25,6 @@ export const useCurrencyStore = defineStore('currency', () => {
           return AVAILABEL_CURRENCIES.includes(keys[0]) && AVAILABEL_CURRENCIES.includes(keys[1])
         })
       )
-      console.log(filterdCurrencies)
       return (currency.value = filterdCurrencies)
     } catch (e) {
       error.value = e
